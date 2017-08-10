@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <tree-select></tree-select>
+    <tree-select :tree="tree"></tree-select>
   </div>
 </template>
 
@@ -9,6 +9,28 @@ import TreeSelect from './components/TreeSelect';
 
 export default {
   name: 'app',
+  data() {
+    return {
+      tree: {
+        name: 'root',
+        value: 'root-value',
+        children: [{
+          name: 'c1',
+          value: 'c1-value',
+        }, {
+          name: 'c2',
+          value: 'c2-value',
+        }, {
+          name: 'c3',
+          value: 'c3-value',
+          children: [{
+            name: 'c4',
+            value: 'c4-value',
+          }],
+        }],
+      },
+    };
+  },
   components: {
     TreeSelect,
   },
