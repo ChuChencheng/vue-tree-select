@@ -3,13 +3,14 @@
     <input class="js-vts-input" type="text" :name="name" readonly v-model="selected" @click.stop="handleInputClick">
     <div class="vts-tree-container js-vts-tree-container" v-show="showTree" data-tree @click.stop>
       <ul>
-        <item :tree="tree" @select="handleSelect"></item>
+        <item :tree="tree"></item>
       </ul>
     </div>
   </div>
 </template>
 
 <script>
+import EventBus from './EventBus';
 import Item from './Item';
 
 export default {
@@ -31,6 +32,9 @@ export default {
       default: true,
     },
   },
+  created() {
+    this.attachEvents();
+  },
   mounted() {
     document.addEventListener('click', (e) => { if (!e.target.hasAttribute('data-tree')) { this.showTree = false; } });
     const $input = this.$el.querySelector('.js-vts-input');
@@ -47,15 +51,18 @@ export default {
     };
   },
   methods: {
+    attachEvents() {
+      EventBus.$on('select', this.handleSelect);
+    },
     handleInputClick() {
       this.showTree = !this.showTree;
     },
-    handleSelect(selectedValue) {
+    handleSelect(selectedOpt) {
       if (this.multiple) {
-        this.selected.push(selectedValue);
+        this.selected.push(selectedOpt.value);
         this.selected = [...new Set(this.selected)];
       } else {
-        this.selected = [selectedValue];
+        this.selected = [selectedOpt.value];
       }
     },
   },
