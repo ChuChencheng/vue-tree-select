@@ -1,16 +1,17 @@
 <template>
   <li>
-    <div class="vts-option" :class="{ 'vts-selected': selected }" @click="handleSelect">
+    <div class="vts-option" :class="{ 'vts-selected': isSelected }" @click="handleSelect">
       <span v-for="n in getLayer - 1">&nbsp;</span>
-      <span class="vts-expander" v-if="isFolder" @click.stop="handleExpand">{{ open ? '-' : '+' }}</span>
+      <span class="vts-expander" v-if="isFolder" @click.stop="handleExpand">{{ isOpen ? '-' : '+' }}</span>
       <span :class="icon"></span>
       <span :data-value="tree.value">{{ tree.name }}</span>
     </div>
-    <ul v-if="isFolder" v-show="open">
+    <ul v-if="isFolder" v-show="isOpen">
       <item
       v-for="(children, index) in tree.children"
       :key="index"
       :tree="children"
+      :selected="selected"
       :level="`${level}.${index}`">
     </item>
   </ul>
@@ -27,6 +28,10 @@
         type: Object,
         required: true,
       },
+      selected: {
+        type: Array,
+        default: () => [],
+      },
       selectLeafOnly: {
         type: Boolean,
         default: true,
@@ -38,20 +43,24 @@
       icon: String,
     },
     created() {
+      this.initSelected();
       this.attachEvents();
     },
     data() {
       return {
-        open: true,
-        selected: false,
+        isOpen: true,
+        isSelected: false,
       };
     },
     methods: {
+      initSelected() {
+        this.isSelected = this.selected.indexOf(this.tree.value) > -1;
+      },
       attachEvents() {
         EventBus.$on('select', this.handleOtherSelect);
       },
       handleExpand() {
-        this.open = !this.open;
+        this.isOpen = !this.isOpen;
       },
       handleSelect() {
         const opt = {
@@ -60,11 +69,11 @@
           level: this.level,
         };
         EventBus.$emit('select', opt);
-        this.selected = true;
+        this.isSelected = true;
       },
       handleOtherSelect(opt) {
         if (opt.value !== this.tree.value) {
-          this.selected = false;
+          this.isSelected = false;
         }
       },
     },

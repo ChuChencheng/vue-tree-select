@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <tree-select :tree="tree"></tree-select>
+    <tree-select :tree="tree" :selected="['c3-value']"></tree-select>
   </div>
 </template>
 

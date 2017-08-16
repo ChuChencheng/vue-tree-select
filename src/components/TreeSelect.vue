@@ -1,9 +1,9 @@
 <template>
   <div class="vts-container">
-    <input class="js-vts-input" type="text" :name="name" readonly v-model="selected" @click.stop="handleInputClick">
+    <input class="js-vts-input" type="text" :name="name" readonly v-model="selectedOpts" @click.stop="handleInputClick">
     <div class="vts-tree-container js-vts-tree-container" style="display: none;" v-show="showTree" data-tree @click.stop>
       <ul>
-        <item :tree="tree"></item>
+        <item :tree="tree" :selected="selected"></item>
       </ul>
     </div>
   </div>
@@ -31,6 +31,10 @@
         type: Boolean,
         default: true,
       },
+      selected: {
+        type: Array,
+        default: () => [],
+      },
     },
     created() {
       this.attachEvents();
@@ -46,7 +50,7 @@
     },
     data() {
       return {
-        selected: [],
+        selectedOpts: this.selected,
         showTree: false,
       };
     },
@@ -59,10 +63,10 @@
       },
       handleSelect(selectedOpt) {
         if (this.multiple) {
-          this.selected.push(selectedOpt.value);
-          this.selected = [...new Set(this.selected)];
+          this.selectedOpts.push(selectedOpt.value);
+          this.selectedOpts = [...new Set(this.selectedOpts)];
         } else {
-          this.selected = [selectedOpt.value];
+          this.selectedOpts = [selectedOpt.value];
           this.showTree = false;
         }
       },
