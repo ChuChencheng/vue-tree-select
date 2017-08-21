@@ -1,21 +1,26 @@
 <template>
   <li>
     <div class="vts-option" :class="{ 'vts-selected': isSelected }" @click="handleSelect">
-      <span v-for="n in getLayer - 1">&nbsp;</span>
+      <span class="vts-space" v-for="n in getLayer - 1">&nbsp;</span>
       <span class="vts-expander" v-if="isFolder" @click.stop="handleExpand">{{ isOpen ? '-' : '+' }}</span>
-      <span :class="icon"></span>
+      <span v-if="multiple"><input type="checkbox" :checked="isSelected"></span>
+      <span v-if="icon && icon.length" :class="icon"></span>
       <span :data-value="tree.value">{{ tree.name }}</span>
     </div>
     <ul v-if="isFolder" v-show="isOpen">
       <item
-      v-for="(children, index) in tree.children"
-      :key="index"
-      :tree="children"
-      :selected="selected"
-      :level="`${level}.${index}`">
-    </item>
-  </ul>
-</li>
+        v-for="(children, index) in tree.children"
+        :key="index"
+        :tree="children"
+        :expand="expand"
+        :multiple="multiple"
+        :selected="selected"
+        :selectLeafOnly="selectLeafOnly"
+        :icon="icon"
+        :level="`${level}.${index}`">
+      </item>
+    </ul>
+  </li>
 </template>
 
 <script>
@@ -28,14 +33,10 @@
         type: Object,
         required: true,
       },
-      selected: {
-        type: Array,
-        default: () => [],
-      },
-      selectLeafOnly: {
-        type: Boolean,
-        default: true,
-      },
+      expand: Boolean,
+      multiple: Boolean,
+      selected: Array,
+      selectLeafOnly: Boolean,
       level: {
         type: String,
         default: '0',
@@ -48,7 +49,7 @@
     },
     data() {
       return {
-        isOpen: true,
+        isOpen: this.expand,
         isSelected: false,
       };
     },
@@ -63,6 +64,9 @@
         this.isOpen = !this.isOpen;
       },
       handleSelect() {
+        if (this.selectLeafOnly && this.isFolder) {
+          return;
+        }
         const opt = {
           name: this.tree.name,
           value: this.tree.value,
@@ -101,8 +105,17 @@
     height: 20px;
     cursor: default;
     user-select: none;
+    font-size: 0;  //解决inline-block span存在间隙问题
     &:hover{
       background-color: #ade4ec;
+    }
+    span {
+      display: inline-block;
+      width: 18px;
+      height: 20px;
+      line-height: 20px;
+      text-align: left;
+      font-size: 14px;
     }
   }
   .vts-expander {

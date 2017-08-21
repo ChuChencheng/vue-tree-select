@@ -1,9 +1,15 @@
 <template>
   <div class="vts-container">
-    <input class="js-vts-input" type="text" :name="name" readonly v-model="selectedOpts" @click.stop="handleInputClick">
+    <input class="js-vts-input" type="text" :name="name" readonly v-model="selected" @click.stop="handleInputClick">
     <div class="vts-tree-container js-vts-tree-container" style="display: none;" v-show="showTree" data-tree @click.stop>
       <ul>
-        <item :tree="tree" :selected="selected"></item>
+        <item 
+          :tree="tree"
+          :expand="expand"
+          :multiple="multiple"
+          :selected="selected"
+          :selectLeafOnly="selectLeafOnly">
+        </item>
       </ul>
     </div>
   </div>
@@ -21,17 +27,19 @@
         type: Object,
         required: true,
       },
-      defaultSelected: {
-      },
       multiple: {
         type: Boolean,
         default: false,
+      },
+      selectLeafOnly: {
+        type: Boolean,
+        default: true,
       },
       expand: {
         type: Boolean,
         default: true,
       },
-      selected: {
+      defaultSelected: {
         type: Array,
         default: () => [],
       },
@@ -43,14 +51,14 @@
       document.addEventListener('click', (e) => { if (!e.target.hasAttribute('data-tree')) { this.showTree = false; } });
       const $input = this.$el.querySelector('.js-vts-input');
       const $treeContainer = this.$el.querySelector('.js-vts-tree-container');
-      const w = $input.getBoundingClientRect().width - 1;
+      const w = $input.getBoundingClientRect().width - 2;
       const h = $input.getBoundingClientRect().height;
       const l = $input.offsetLeft;
       $treeContainer.style.cssText += `;width: ${w}px; top: ${h}px; left: ${l}px;`;
     },
     data() {
       return {
-        selectedOpts: this.selected,
+        selected: this.defaultSelected,
         showTree: false,
       };
     },
@@ -63,10 +71,10 @@
       },
       handleSelect(selectedOpt) {
         if (this.multiple) {
-          this.selectedOpts.push(selectedOpt.value);
-          this.selectedOpts = [...new Set(this.selectedOpts)];
+          this.selected.push(selectedOpt.value);
+          this.selected = [...new Set(this.selected)];
         } else {
-          this.selectedOpts = [selectedOpt.value];
+          this.selected = [selectedOpt.value];
           this.showTree = false;
         }
       },
@@ -102,8 +110,10 @@
     position: absolute;
     top: 0;
     left: 0;
+    overflow-x: auto;
     ul {
       padding: 0;
+      min-width: 100%;
     }
   }
 </style>

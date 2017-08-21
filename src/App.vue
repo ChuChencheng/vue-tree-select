@@ -1,6 +1,11 @@
 <template>
   <div id="app">
-    <tree-select :tree="tree" :selected="['c3-value']"></tree-select>
+    <tree-select 
+      :tree="tree"
+      :defaultSelected="['c2-value']"
+      :multiple="true"
+      :selectLeafOnly="false">
+    </tree-select>
   </div>
 </template>
 
