@@ -3,7 +3,7 @@
     <div class="vts-option" :class="{ 'vts-selected': isSelected }" @click="handleSelect">
       <span class="vts-space" v-for="n in getLayer - 1">&nbsp;</span>
       <span class="vts-expander" v-if="isFolder" @click.stop="handleExpand">{{ isOpen ? '-' : '+' }}</span>
-      <span v-if="multiple"><input type="checkbox" :checked="isSelected"></span>
+      <span v-if="multiple"><input type="checkbox" :checked="isSelected" ref="checkbox"></span>
       <span v-if="icon && icon.length" :class="icon"></span>
       <span :data-value="tree.value">{{ tree.name }}</span>
     </div>
@@ -59,26 +59,51 @@
       },
       attachEvents() {
         EventBus.$on('select', this.handleOtherSelect);
+        // EventBus.$on('unselect', this.handleOtherSelect);
       },
       handleExpand() {
         this.isOpen = !this.isOpen;
       },
       handleSelect() {
-        if (this.selectLeafOnly && this.isFolder) {
-          return;
+        if (this.multiple) {
+          this.isSelected = !this.isSelected;
+          if (this.isFolder) {
+            this.checkAllChildren(this.$children, this.isSelected);
+          }
+        } else {
+          if (this.selectLeafOnly && this.isFolder) {
+            return;
+          }
+          this.isSelected = true;
         }
-        const opt = {
-          name: this.tree.name,
-          value: this.tree.value,
-          level: this.level,
-        };
-        EventBus.$emit('select', opt);
-        this.isSelected = true;
       },
       handleOtherSelect(opt) {
-        if (opt.value !== this.tree.value) {
+        if (this.multiple) {
+          if (this.level < opt.level && this.isFolder) {
+            this.$refs.checkbox.indeterminate = this.isIndeterminate(this.$children);
+          }
+        } else if (opt.value !== this.tree.value) {
           this.isSelected = false;
         }
+      },
+      checkAllChildren($children, check) {
+        $children.forEach((element) => {
+          const el = element;
+          el.isSelected = check;
+          this.checkAllChildren(element.$children, check);
+        });
+      },
+      isIndeterminate($root) {
+        let indeterminate = true;
+        const queue = [];
+        queue.push(...$root);
+        while (queue.length) {
+          const first = queue.shift();
+          indeterminate = indeterminate && first.isSelected;
+          if (!indeterminate) break;
+          queue.push(...first.$children);
+        }
+        return !indeterminate;
       },
     },
     computed: {
@@ -87,6 +112,20 @@
       },
       getLayer() {
         return this.isFolder ? this.level.split('.').length : this.level.split('.').length + 1;
+      },
+    },
+    watch: {
+      isSelected(newVal) {
+        const opt = {
+          name: this.tree.name,
+          value: this.tree.value,
+          level: this.level,
+        };
+        if (newVal) {
+          EventBus.$emit('select', opt);
+        } else {
+          EventBus.$emit('unselect', opt);
+        }
       },
     },
   };

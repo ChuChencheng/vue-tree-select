@@ -65,18 +65,23 @@
     methods: {
       attachEvents() {
         EventBus.$on('select', this.handleSelect);
+        EventBus.$on('unselect', this.handleUnSelect);
       },
       handleInputClick() {
         this.showTree = !this.showTree;
       },
-      handleSelect(selectedOpt) {
+      handleSelect(opt) {
         if (this.multiple) {
-          this.selected.push(selectedOpt.value);
+          this.selected.push(opt.value);
           this.selected = [...new Set(this.selected)];
         } else {
-          this.selected = [selectedOpt.value];
+          this.selected = [opt.value];
           this.showTree = false;
         }
+      },
+      handleUnSelect(opt) {
+        const index = this.selected.indexOf(opt.value);
+        this.selected.splice(index, 1);
       },
     },
     computed: {
