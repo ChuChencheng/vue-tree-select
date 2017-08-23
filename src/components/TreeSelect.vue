@@ -4,6 +4,7 @@
     <div class="vts-tree-container js-vts-tree-container" style="display: none;" v-show="showTree" data-tree @click.stop>
       <ul>
         <item 
+          :EventBus="EventBus"
           :tree="tree"
           :expand="expand"
           :multiple="multiple"
@@ -16,7 +17,7 @@
 </template>
 
 <script>
-  import EventBus from './EventBus';
+  import Vue from 'vue';
   import Item from './Item';
 
   export default {
@@ -58,30 +59,32 @@
     },
     data() {
       return {
+        EventBus: new Vue(),
         selected: this.defaultSelected,
         showTree: false,
       };
     },
     methods: {
       attachEvents() {
-        EventBus.$on('select', this.handleSelect);
-        EventBus.$on('unselect', this.handleUnSelect);
+        this.EventBus.$on('select', this.handleSelect);
+        this.EventBus.$on('unselect', this.handleUnSelect);
       },
       handleInputClick() {
         this.showTree = !this.showTree;
       },
       handleSelect(opt) {
-        if (this.multiple) {
-          this.selected.push(opt.value);
-          this.selected = [...new Set(this.selected)];
-        } else {
-          this.selected = [opt.value];
+        if (this.selectLeafOnly && opt.isFolder) return;
+        this.selected.push(opt.value);
+        this.selected = [...new Set(this.selected)];
+        if (!this.multiple) {
           this.showTree = false;
         }
       },
       handleUnSelect(opt) {
         const index = this.selected.indexOf(opt.value);
-        this.selected.splice(index, 1);
+        if (index > -1) {
+          this.selected.splice(index, 1);
+        }
       },
     },
     computed: {

@@ -1,11 +1,21 @@
 <template>
   <div id="app">
-    <tree-select 
-      :tree="tree"
-      :defaultSelected="['c2-value']"
-      :multiple="true"
-      :selectLeafOnly="false">
-    </tree-select>
+    <div style="float: left;">
+      <tree-select 
+        :tree="tree"
+        :defaultSelected="['c2-value']"
+        :multiple="true"
+        :selectLeafOnly="true">
+      </tree-select>
+    </div>
+    <div style="float: left;">
+      <tree-select 
+        :tree="tree"
+        :defaultSelected="['c4-value']"
+        :multiple="false"
+        :selectLeafOnly="false">
+      </tree-select>
+    </div>
   </div>
 </template>
 
@@ -31,6 +41,9 @@ export default {
           children: [{
             name: 'c4',
             value: 'c4-value',
+          }, {
+            name: 'c5',
+            value: 'c5-value',
           }],
         }],
       },
