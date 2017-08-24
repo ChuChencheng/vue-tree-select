@@ -76,6 +76,7 @@
         if (this.selectLeafOnly && opt.isFolder) return;
         this.selected.push(opt.value);
         this.selected = [...new Set(this.selected)];
+        this.triggerChange();
         if (!this.multiple) {
           this.showTree = false;
         }
@@ -84,7 +85,11 @@
         const index = this.selected.indexOf(opt.value);
         if (index > -1) {
           this.selected.splice(index, 1);
+          this.triggerChange();
         }
+      },
+      triggerChange() {
+        this.$emit('change');
       },
     },
     computed: {

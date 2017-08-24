@@ -6,7 +6,7 @@
         <span class="vts-expander" v-if="isFolder" @click.stop.prevent="handleExpand">{{ isOpen ? '-' : '+' }}</span>
         <span v-if="multiple"><input type="checkbox" v-model="isSelected" @change="handleMultipleSelect" ref="checkbox"></span>
         <span v-if="icon && icon.length" :class="icon"></span>
-        <span :data-value="tree.value">{{ tree.name }}</span>
+        <span>{{ tree.name }}</span>
       </div>
     </label>
     <ul v-if="isFolder" v-show="isOpen">
@@ -154,6 +154,9 @@
   * {
     margin: 0;
     padding: 0;
+  }
+  input {
+    max-width: 15px;
   }
   ul {
     list-style-type: none;
