@@ -1,6 +1,20 @@
-# tree-select
+# vue-tree-select
 
-> A Vue.js project
+## Description
+
+TreeSelect组件，目前实现了单选、多选。
+
+计划：树查看，树编辑，树菜单
+
+## Events
+
+* **change**: 
+    
+    选项改变时触发，无论其来源是否是用户的点击（isSelected改变也会触发事件），因此多选点击时可能触发多次，默认传递参数name, value, level, isFolder
+
+* **itemclick**: 
+
+    用户点击选项时触发，包括单选的选中，多选的选中或撤销，，默认传递参数name, value, level, isFolder
 
 ## Build Setup
 

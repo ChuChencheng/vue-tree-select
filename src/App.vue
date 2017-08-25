@@ -3,7 +3,7 @@
     <div style="width: 600px;float: left;">
       <tree-select 
         :tree="tree"
-        :defaultSelected="['c2-value']"
+        :defaultSelected="[{name: 'c2', value: 'c2-value'}]"
         :multiple="true"
         :selectLeafOnly="true">
       </tree-select>
@@ -11,7 +11,7 @@
     <div style="width: 600px;float: left;">
       <tree-select 
         :tree="tree"
-        :defaultSelected="['c4-value']"
+        :defaultSelected="[{name: 'c4', value: 'c4-value'}]"
         :multiple="false"
         :selectLeafOnly="false">
       </tree-select>

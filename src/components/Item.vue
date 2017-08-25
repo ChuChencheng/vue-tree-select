@@ -57,7 +57,7 @@
     },
     methods: {
       initSelected() {
-        this.isSelected = this.selected.indexOf(this.tree.value) > -1;
+        this.isSelected = this.selected.some(el => el.value === this.tree.value);
       },
       attachEvents() {
         this.EventBus.$on('select', this.handleOtherSelect);
@@ -69,9 +69,11 @@
       handleSingleSelect() {
         if (this.multiple) return;
         if (this.selectLeafOnly && this.isFolder) return;
+        this.triggerItemClick();
         this.isSelected = true;
       },
       handleMultipleSelect() {
+        this.triggerItemClick();
         if (this.isFolder) {
           this.checkAllChildren(this.$children, this.isSelected);
         }
@@ -123,6 +125,9 @@
         }
         return 'unchecked';
       },
+      triggerItemClick() {
+        this.EventBus.$emit('itemclick', this.getOpt);
+      },
     },
     computed: {
       isFolder() {
@@ -131,19 +136,21 @@
       getLayer() {
         return this.isFolder ? this.level.split('.').length : this.level.split('.').length + 1;
       },
-    },
-    watch: {
-      isSelected(newVal) {
-        const opt = {
+      getOpt() {
+        return {
           name: this.tree.name,
           value: this.tree.value,
           level: this.level,
           isFolder: this.isFolder,
         };
+      },
+    },
+    watch: {
+      isSelected(newVal) {
         if (newVal) {
-          this.EventBus.$emit('select', opt);
+          this.EventBus.$emit('select', this.getOpt);
         } else {
-          this.EventBus.$emit('unselect', opt);
+          this.EventBus.$emit('unselect', this.getOpt);
         }
       },
     },

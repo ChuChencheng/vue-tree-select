@@ -1,6 +1,7 @@
 <template>
   <div class="vts-container">
-    <input class="js-vts-input" type="text" :name="name" readonly v-model="selected" @click.stop="handleInputClick">
+    <input class="js-vts-input" type="text" readonly v-model="selectedName" @click.stop="handleInputClick">
+    <input type="hidden" :name="name" v-model="selectedValue">
     <div class="vts-tree-container js-vts-tree-container" style="display: none;" v-show="showTree" data-tree @click.stop>
       <ul>
         <item 
@@ -8,7 +9,7 @@
           :tree="tree"
           :expand="expand"
           :multiple="multiple"
-          :selected="selected"
+          :selected="defaultSelected"
           :selectLeafOnly="selectLeafOnly">
         </item>
       </ul>
@@ -52,15 +53,16 @@
       document.addEventListener('click', (e) => { if (!e.target.hasAttribute('data-tree')) { this.showTree = false; } });
       const $input = this.$el.querySelector('.js-vts-input');
       const $treeContainer = this.$el.querySelector('.js-vts-tree-container');
-      const w = $input.getBoundingClientRect().width - 2;
-      const h = $input.getBoundingClientRect().height;
+      const rect = $input.getBoundingClientRect();
+      const w = rect.width - 2;
+      const h = rect.height;
       const l = $input.offsetLeft;
       $treeContainer.style.cssText += `;width: ${w}px; top: ${h}px; left: ${l}px;`;
     },
     data() {
       return {
         EventBus: new Vue(),
-        selected: this.defaultSelected,
+        selected: [],
         showTree: false,
       };
     },
@@ -68,32 +70,50 @@
       attachEvents() {
         this.EventBus.$on('select', this.handleSelect);
         this.EventBus.$on('unselect', this.handleUnSelect);
+        this.EventBus.$on('itemclick', this.handleItemClick);
       },
       handleInputClick() {
         this.showTree = !this.showTree;
       },
       handleSelect(opt) {
         if (this.selectLeafOnly && opt.isFolder) return;
-        this.selected.push(opt.value);
-        this.selected = [...new Set(this.selected)];
-        this.triggerChange();
+        this.selected.push(opt);
+        this.triggerChange(opt);
         if (!this.multiple) {
           this.showTree = false;
         }
       },
       handleUnSelect(opt) {
-        const index = this.selected.indexOf(opt.value);
-        if (index > -1) {
+        let index = 0;
+        for (; index < this.selectedLength; index += 1) {
+          if (this.selected[index].value === opt.value) {
+            break;
+          }
+        }
+        if (index < this.selectedLength) {
           this.selected.splice(index, 1);
-          this.triggerChange();
+          if (this.multiple) {
+            this.triggerChange(opt);
+          }
         }
       },
-      triggerChange() {
-        this.$emit('change');
+      handleItemClick(opt) {
+        this.$emit('itemclick', opt);
+      },
+      triggerChange(opt) {
+        this.$emit('change', opt);
       },
     },
     computed: {
-
+      selectedLength() {
+        return this.selected.length;
+      },
+      selectedName() {
+        return this.selected.map(el => el.name);
+      },
+      selectedValue() {
+        return this.selected.map(el => el.value);
+      },
     },
     components: {
       Item,
