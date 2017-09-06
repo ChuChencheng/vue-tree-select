@@ -26,7 +26,7 @@ export default {
   name: 'app',
   data() {
     return {
-      tree: {
+      tree: [{
         name: 'root',
         value: 'root-value',
         children: [{
@@ -46,7 +46,10 @@ export default {
             value: 'c5-value',
           }],
         }],
-      },
+      }, {
+        name: 'root2',
+        value: 'root2-value',
+      }],
     };
   },
   components: {

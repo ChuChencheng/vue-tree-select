@@ -4,13 +4,17 @@
     <input type="hidden" :name="name" v-model="selectedValue">
     <div class="vts-tree-container js-vts-tree-container" style="display: none;" v-show="showTree" data-tree @click.stop>
       <ul>
-        <item 
+        <item
+          v-for="(children, index) in tree"
+          :key="index"
           :EventBus="EventBus"
-          :tree="tree"
+          :tree="children"
           :expand="expand"
           :multiple="multiple"
-          :selected="defaultSelected"
-          :selectLeafOnly="selectLeafOnly">
+          :selected="selected"
+          :selectLeafOnly="selectLeafOnly"
+          :icon="icon"
+          :level="`${level}.${index}`">
         </item>
       </ul>
     </div>
@@ -25,8 +29,12 @@
     name: 'tree-select',
     props: {
       name: {},
+      mode: {
+        type: String,
+        default: 'select',
+      },
       tree: {
-        type: Object,
+        type: Array,
         required: true,
       },
       multiple: {
@@ -40,6 +48,11 @@
       expand: {
         type: Boolean,
         default: true,
+      },
+      icon: {},
+      level: {
+        type: String,
+        default: '0',
       },
       defaultSelected: {
         type: Array,
