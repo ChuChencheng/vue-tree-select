@@ -9,10 +9,15 @@ module.exports = {
   env: {
     browser: true,
   },
-  extends: 'airbnb-base',
+  extends: [
+    'plugin:vue-libs/recommended',
+    // 'plugin:flowtype/recommended',
+    'plugin:import/errors'
+  ],
   // required to lint *.vue files
   plugins: [
-    'html'
+    'html',
+    'flowtype'
   ],
   // check if imports actually resolve
   'settings': {
@@ -36,6 +41,8 @@ module.exports = {
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
 
-    'linebreak-style': [0, 'windows']
+    'linebreak-style': [0, 'windows'],
+    // allow trailing commas
+    'comma-dangle': ['error', 'always']
   }
 }

@@ -45,116 +45,116 @@
       },
       icon: String,
     },
-    created() {
-      this.initSelected();
-      this.attachEvents();
+    created () {
+      this.initSelected()
+      this.attachEvents()
     },
-    data() {
+    data () {
       return {
         isOpen: this.expand,
         isSelected: false,
-      };
+      }
     },
     methods: {
-      initSelected() {
-        this.isSelected = this.selected.some(el => el.value === this.tree.value);
+      initSelected () {
+        this.isSelected = this.selected.some(el => el.value === this.tree.value)
       },
-      attachEvents() {
-        this.EventBus.$on('select', this.handleOtherSelect);
-        this.EventBus.$on('unselect', this.handleOtherUnSelect);
+      attachEvents () {
+        this.EventBus.$on('select', this.handleOtherSelect)
+        this.EventBus.$on('unselect', this.handleOtherUnSelect)
       },
-      handleExpand() {
-        this.isOpen = !this.isOpen;
+      handleExpand () {
+        this.isOpen = !this.isOpen
       },
-      handleSingleSelect() {
-        if (this.multiple) return;
-        if (this.selectLeafOnly && this.isFolder) return;
-        this.triggerItemClick();
-        this.isSelected = true;
+      handleSingleSelect () {
+        if (this.multiple) return
+        if (this.selectLeafOnly && this.isFolder) return
+        this.triggerItemClick()
+        this.isSelected = true
       },
-      handleMultipleSelect() {
-        this.triggerItemClick();
+      handleMultipleSelect () {
+        this.triggerItemClick()
         if (this.isFolder) {
-          this.checkAllChildren(this.$children, this.isSelected);
+          this.checkAllChildren(this.$children, this.isSelected)
         }
       },
-      handleOtherSelect(opt) {
+      handleOtherSelect (opt) {
         if (this.multiple) {
-          this.checkOtherMultipleToggleSelect(opt);
+          this.checkOtherMultipleToggleSelect(opt)
         } else if (opt.value !== this.tree.value) {
-          this.isSelected = false;
+          this.isSelected = false
         }
       },
-      handleOtherUnSelect(opt) {
+      handleOtherUnSelect (opt) {
         if (this.multiple) {
-          this.checkOtherMultipleToggleSelect(opt);
+          this.checkOtherMultipleToggleSelect(opt)
         }
       },
-      checkOtherMultipleToggleSelect(opt) {
+      checkOtherMultipleToggleSelect (opt) {
         if (this.level < opt.level && this.isFolder) {
-          this.$refs.checkbox.indeterminate = false;
-          const type = this.isCheckedOrIndeterminate(this.$children);
+          this.$refs.checkbox.indeterminate = false
+          const type = this.isCheckedOrIndeterminate(this.$children)
           switch (type) {
             case 'checked':
-              this.isSelected = true;
-              break;
+              this.isSelected = true
+              break
             case 'unchecked':
-              this.isSelected = false;
-              break;
+              this.isSelected = false
+              break
             case 'indeterminate':
-              this.isSelected = false;
-              this.$refs.checkbox.indeterminate = true;
-              break;
+              this.isSelected = false
+              this.$refs.checkbox.indeterminate = true
+              break
             default:
           }
         }
       },
-      checkAllChildren($children, check) {
+      checkAllChildren ($children, check) {
         $children.forEach((element) => {
-          const el = element;
-          el.isSelected = check;
-          this.checkAllChildren(element.$children, check);
-        });
+          const el = element
+          el.isSelected = check
+          this.checkAllChildren(element.$children, check)
+        })
       },
-      isCheckedOrIndeterminate($children) {
+      isCheckedOrIndeterminate ($children) {
         if ($children.every(el => el.isSelected)) {
-          return 'checked';
+          return 'checked'
         }
         if ($children.some(el => el.isSelected)) {
-          return 'indeterminate';
+          return 'indeterminate'
         }
-        return 'unchecked';
+        return 'unchecked'
       },
-      triggerItemClick() {
-        this.EventBus.$emit('itemclick', this.getOpt);
+      triggerItemClick () {
+        this.EventBus.$emit('itemclick', this.getOpt)
       },
     },
     computed: {
-      isFolder() {
-        return this.tree.children && this.tree.children.length;
+      isFolder () {
+        return this.tree.children && this.tree.children.length
       },
-      getLayer() {
-        return this.isFolder ? this.level.split('.').length : this.level.split('.').length + 1;
+      getLayer () {
+        return this.isFolder ? this.level.split('.').length : this.level.split('.').length + 1
       },
-      getOpt() {
+      getOpt () {
         return {
           name: this.tree.name,
           value: this.tree.value,
           level: this.level,
           isFolder: this.isFolder,
-        };
-      },
-    },
-    watch: {
-      isSelected(newVal) {
-        if (newVal) {
-          this.EventBus.$emit('select', this.getOpt);
-        } else {
-          this.EventBus.$emit('unselect', this.getOpt);
         }
       },
     },
-  };
+    watch: {
+      isSelected (newVal) {
+        if (newVal) {
+          this.EventBus.$emit('select', this.getOpt)
+        } else {
+          this.EventBus.$emit('unselect', this.getOpt)
+        }
+      },
+    },
+  }
 </script>
 
 <style lang="less" scoped>

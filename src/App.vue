@@ -20,42 +20,48 @@
 </template>
 
 <script>
-import TreeSelect from './components/TreeSelect';
+import TreeSelect from './components/TreeSelect'
 
 export default {
   name: 'app',
-  data() {
+  data () {
     return {
-      tree: [{
-        name: 'root',
-        value: 'root-value',
-        children: [{
-          name: 'c1',
-          value: 'c1-value',
+      tree: [
+        {
+          name: 'root',
+          value: 'root-value',
+          children: [
+            {
+              name: 'c1',
+              value: 'c1-value',
+            }, {
+              name: 'c2',
+              value: 'c2-value',
+            }, {
+              name: 'c3',
+              value: 'c3-value',
+              children: [
+                {
+                  name: 'c4',
+                  value: 'c4-value',
+                }, {
+                  name: 'c5',
+                  value: 'c5-value',
+                },
+              ],
+            },
+          ],
         }, {
-          name: 'c2',
-          value: 'c2-value',
-        }, {
-          name: 'c3',
-          value: 'c3-value',
-          children: [{
-            name: 'c4',
-            value: 'c4-value',
-          }, {
-            name: 'c5',
-            value: 'c5-value',
-          }],
-        }],
-      }, {
-        name: 'root2',
-        value: 'root2-value',
-      }],
-    };
+          name: 'root2',
+          value: 'root2-value',
+        },
+      ],
+    }
   },
   components: {
     TreeSelect,
   },
-};
+}
 </script>
 
 <style>

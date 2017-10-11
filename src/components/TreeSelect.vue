@@ -22,10 +22,10 @@
 </template>
 
 <script>
-  import Vue from 'vue';
-  import Item from './Item';
+  import Vue from 'vue'
+import Item from './Item'
 
-  export default {
+export default {
     name: 'tree-select',
     props: {
       name: {},
@@ -59,79 +59,79 @@
         default: () => [],
       },
     },
-    created() {
-      this.attachEvents();
+    created () {
+      this.attachEvents()
     },
-    mounted() {
-      document.addEventListener('click', (e) => { if (!e.target.hasAttribute('data-tree')) { this.showTree = false; } });
-      const $input = this.$el.querySelector('.js-vts-input');
-      const $treeContainer = this.$el.querySelector('.js-vts-tree-container');
-      const rect = $input.getBoundingClientRect();
-      const w = rect.width - 2;
-      const h = rect.height;
-      const l = $input.offsetLeft;
-      $treeContainer.style.cssText += `;width: ${w}px; top: ${h}px; left: ${l}px;`;
+    mounted () {
+      document.addEventListener('click', (e) => { if (!e.target.hasAttribute('data-tree')) { this.showTree = false } })
+      const $input = this.$el.querySelector('.js-vts-input')
+      const $treeContainer = this.$el.querySelector('.js-vts-tree-container')
+      const rect = $input.getBoundingClientRect()
+      const w = rect.width - 2
+      const h = rect.height
+      const l = $input.offsetLeft
+      $treeContainer.style.cssText += `;width: ${w}px; top: ${h}px; left: ${l}px;`
     },
-    data() {
+    data () {
       return {
         EventBus: new Vue(),
         selected: [],
         showTree: false,
-      };
+      }
     },
     methods: {
-      attachEvents() {
-        this.EventBus.$on('select', this.handleSelect);
-        this.EventBus.$on('unselect', this.handleUnSelect);
-        this.EventBus.$on('itemclick', this.handleItemClick);
+      attachEvents () {
+        this.EventBus.$on('select', this.handleSelect)
+        this.EventBus.$on('unselect', this.handleUnSelect)
+        this.EventBus.$on('itemclick', this.handleItemClick)
       },
-      handleInputClick() {
-        this.showTree = !this.showTree;
+      handleInputClick () {
+        this.showTree = !this.showTree
       },
-      handleSelect(opt) {
-        if (this.selectLeafOnly && opt.isFolder) return;
-        this.selected.push(opt);
-        this.triggerChange(opt);
+      handleSelect (opt) {
+        if (this.selectLeafOnly && opt.isFolder) return
+        this.selected.push(opt)
+        this.triggerChange(opt)
         if (!this.multiple) {
-          this.showTree = false;
+          this.showTree = false
         }
       },
-      handleUnSelect(opt) {
-        let index = 0;
+      handleUnSelect (opt) {
+        let index = 0
         for (; index < this.selectedLength; index += 1) {
           if (this.selected[index].value === opt.value) {
-            break;
+            break
           }
         }
         if (index < this.selectedLength) {
-          this.selected.splice(index, 1);
+          this.selected.splice(index, 1)
           if (this.multiple) {
-            this.triggerChange(opt);
+            this.triggerChange(opt)
           }
         }
       },
-      handleItemClick(opt) {
-        this.$emit('itemclick', opt);
+      handleItemClick (opt) {
+        this.$emit('itemclick', opt)
       },
-      triggerChange(opt) {
-        this.$emit('change', opt);
+      triggerChange (opt) {
+        this.$emit('change', opt)
       },
     },
     computed: {
-      selectedLength() {
-        return this.selected.length;
+      selectedLength () {
+        return this.selected.length
       },
-      selectedName() {
-        return this.selected.map(el => el.name);
+      selectedName () {
+        return this.selected.map(el => el.name)
       },
-      selectedValue() {
-        return this.selected.map(el => el.value);
+      selectedValue () {
+        return this.selected.map(el => el.value)
       },
     },
     components: {
       Item,
     },
-  };
+  }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
