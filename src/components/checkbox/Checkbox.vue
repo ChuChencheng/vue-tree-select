@@ -1,10 +1,14 @@
 <template>
-  <input type="checkbox" :name="name" ref="checkbox">
+  <input
+    type="checkbox"
+    :name="name"
+    ref="checkbox"
+  >
 </template>
 
 <script>
   export default {
-    name: 'checkbox',
+    name: 'Checkbox',
     props: {
       name: String,
       indeterminate: {
@@ -21,7 +25,7 @@
         this.$refs.checkbox.indeterminate = val
       },
       checked (val) {
-        this.$refs.checked = val
+        this.$refs.checkbox.checked = val
       },
     },
   }
