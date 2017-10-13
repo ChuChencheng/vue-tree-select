@@ -1,10 +1,10 @@
 <template>
   <div>
-    <template @click="handleTriggerClick">
+    <div @click="handleTriggerClick">
       <slot>
         <input type="text">
       </slot>
-    </template>
+    </div>
     <DropDown :show="showDrop">
       <TreeList :tree="tree" />
     </DropDown>
@@ -17,10 +17,10 @@ import TreeList from '../tree-list'
 
 export default {
   name: 'TreeSelect',
-  components: [
+  components: {
     DropDown,
     TreeList,
-  ],
+  },
   props: {
     tree: {
       type: Array,

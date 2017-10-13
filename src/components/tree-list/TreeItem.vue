@@ -9,8 +9,11 @@
           :indeterminate="checkbox.indeterminate"
           @click="handleCheck" />
       </span>
+      <span v-text="text"
+        @dblclick="handleExpand"></span>
     </label>
-    <ul>
+    <ul v-if="isFolder"
+      v-show="expanded">
       <TreeItem v-for="(child, index) in tree.children"
         :key="index"
         :tree="child"
@@ -24,13 +27,13 @@ import Checkbox from '../checkbox'
 
 export default {
   name: 'TreeItem',
-  components: [
+  components: {
     Checkbox,
-  ],
+  },
   props: {
     tree: {
-      type: Array,
-      default: () => [],
+      type: Object,
+      default: () => { },
     },
     multiple: {
       type: Boolean,
@@ -53,8 +56,13 @@ export default {
   methods: {
     handleExpand () {
       this.expanded = !this.expanded
+      if (this.isFolder) {
+        this.$emit('expand', {
+          node: this,
+        })
+      }
     },
-    handleCheck () {},
+    handleCheck () { },
     handleSelect () {
       this.selected = true
     },
@@ -69,3 +77,11 @@ export default {
   },
 }
 </script>
+
+<style lang="less" scoped>
+label {
+  user-select: none;
+  cursor: pointer;
+}
+</style>
+

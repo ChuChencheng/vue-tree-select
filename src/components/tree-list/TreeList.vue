@@ -12,9 +12,9 @@ import TreeItem from './TreeItem'
 
 export default {
   name: 'TreeList',
-  components: [
+  components: {
     TreeItem,
-  ],
+  },
   props: {
     tree: {
       type: Array,
